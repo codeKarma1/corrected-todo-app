@@ -10,13 +10,16 @@ type TodoType = {
 };
 
 const Todo = () => {
-  const [todoList, setTodoList] = useState<TodoType[]>(
-    typeof window !== "undefined" && localStorage.getItem("todos")
-      ? JSON.parse(localStorage.getItem("todos") as string)
-      : []
-  );
-
+  const [todoList, setTodoList] = useState<TodoType[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // ✅ Load todos only after the component mounts (client-side)
+  useEffect(() => {
+    const storedTodos = localStorage.getItem("todos");
+    if (storedTodos) {
+      setTodoList(JSON.parse(storedTodos));
+    }
+  }, []);
 
   const add = () => {
     const inputText = inputRef.current?.value.trim();
